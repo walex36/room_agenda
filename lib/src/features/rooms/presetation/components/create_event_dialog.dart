@@ -55,8 +55,8 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
       value: widget.roomInfoProvider,
       child: Consumer<RoomInfoProvider>(builder: (context, provider, child) {
         return DialogComponent(
-          title: const Text(
-            "Criar evento",
+          title: Text(
+            editEvent ? "Editar evento" : "Criar evento",
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black,
