@@ -35,6 +35,7 @@ class RoomInfoProvider extends ChangeNotifier {
       eventDaily: eventDaily,
     );
 
+    isLoadingCreateEvent = false;
     if (result.$1) {
       listEvents.add(eventDaily);
     } else {

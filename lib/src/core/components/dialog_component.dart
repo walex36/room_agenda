@@ -21,7 +21,6 @@ class DialogComponent extends StatelessWidget {
           child: Form(
             key: _keyForm,
             child: ListView(
-              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               children: [
                 title,

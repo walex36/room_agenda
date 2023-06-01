@@ -36,9 +36,7 @@ class CreateRoomDialog extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Form(
                 key: _keyForm,
-                child: ListView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
+                child: Column(
                   children: [
                     TextFormFieldComponent(
                       labelInput: 'Nome da sala',

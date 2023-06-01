@@ -1,30 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:room_agenda/src/core/extension/date_time_extension.dart';
+import 'package:room_agenda/src/core/extension/time_of_day_extension.dart';
 import 'package:room_agenda/src/features/rooms/enums/type_event_daily_enum.dart';
 import 'package:room_agenda/src/features/rooms/models/eventDaily.dart';
 import '../../../../core/components/text_form_field_component.dart';
 import '../../../../core/components/dialog_component.dart';
 import '../../controller/room_info_provider.dart';
 
-class CreateEventDialog extends StatelessWidget {
+class CreateEventDialog extends StatefulWidget {
   final RoomInfoProvider roomInfoProvider;
-  CreateEventDialog({
+
+  const CreateEventDialog({
     super.key,
     required this.roomInfoProvider,
   });
 
-  final _keyForm = GlobalKey<FormState>();
+  @override
+  State<CreateEventDialog> createState() => _CreateEventDialogState();
+}
 
+class _CreateEventDialogState extends State<CreateEventDialog> {
+  final _keyForm = GlobalKey<FormState>();
   final _nameTextController = TextEditingController();
   final _descriptionTextController = TextEditingController();
+
   DateTime _dateStart = DateTime.now();
   DateTime _dateEnd = DateTime.now();
+
   TypeEventDaily _typeEvent = TypeEventDaily.notRepeat;
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RoomInfoProvider>.value(
-      value: roomInfoProvider,
+      value: widget.roomInfoProvider,
       child: Consumer<RoomInfoProvider>(builder: (context, provider, child) {
         return DialogComponent(
           title: const Text(
@@ -40,16 +49,14 @@ class CreateEventDialog extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Form(
                 key: _keyForm,
-                child: ListView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
+                child: Column(
                   children: [
                     TextFormFieldComponent(
                       labelInput: 'Titulo',
                       controller: _nameTextController,
                       maxLength: 50,
                       validator: (value) {
-                        if (value == '') {
+                        if (value == null || value.isEmpty) {
                           return 'Adicione um titulo para o evento!';
                         }
                         return null;
@@ -66,80 +73,281 @@ class CreateEventDialog extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
+                    Text(
+                      'Horário',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Column(
-                          children: [
-                            Text(
-                              'Inicio',
+                        InkWell(
+                          onTap: () async {
+                            TimeOfDay? timeStart = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(_dateStart),
+                            );
+
+                            if (timeStart != null) {
+                              if (timeStart
+                                  .isAfter(TimeOfDay.fromDateTime(_dateEnd))) {
+                                setState(() {
+                                  _dateStart = DateTime(
+                                    _dateStart.year,
+                                    _dateStart.month,
+                                    _dateStart.day,
+                                    TimeOfDay.fromDateTime(_dateEnd).hour,
+                                    TimeOfDay.fromDateTime(_dateEnd).minute,
+                                  );
+                                });
+                              } else {
+                                setState(() {
+                                  _dateStart = DateTime(
+                                    _dateStart.year,
+                                    _dateStart.month,
+                                    _dateStart.day,
+                                    timeStart.hour,
+                                    timeStart.minute,
+                                  );
+                                });
+                              }
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade600),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              _dateStart.hourMinutes(),
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.grey.shade700,
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey.shade600),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '2023/05/02',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                  Text(
-                                    '15:00',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              'Fim',
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Até',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            TimeOfDay? timeEnd = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.fromDateTime(_dateEnd),
+                            );
+
+                            if (timeEnd != null) {
+                              if (timeEnd.isBefore(
+                                  TimeOfDay.fromDateTime(_dateStart))) {
+                                setState(() {
+                                  _dateEnd = DateTime(
+                                    _dateEnd.year,
+                                    _dateEnd.month,
+                                    _dateEnd.day,
+                                    TimeOfDay.fromDateTime(_dateStart).hour,
+                                    TimeOfDay.fromDateTime(_dateStart).minute,
+                                  );
+                                });
+                              } else {
+                                setState(() {
+                                  _dateEnd = DateTime(
+                                    _dateEnd.year,
+                                    _dateEnd.month,
+                                    _dateEnd.day,
+                                    timeEnd.hour,
+                                    timeEnd.minute,
+                                  );
+                                });
+                              }
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade600),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              _dateEnd.hourMinutes(),
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.grey.shade700,
                               ),
                             ),
-                            Container(
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Data',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            DateTime? dateStart = await showDatePicker(
+                              context: context,
+                              initialDate: _dateStart,
+                              firstDate: DateTime(2020),
+                              lastDate: DateTime(2030),
+                            );
+
+                            if (dateStart != null) {
+                              if (_typeEvent == TypeEventDaily.notRepeat) {
+                                setState(() {
+                                  _dateStart = DateTime(
+                                    dateStart.year,
+                                    dateStart.month,
+                                    dateStart.day,
+                                    _dateStart.hour,
+                                    _dateStart.minute,
+                                  );
+                                  _dateEnd = DateTime(
+                                    dateStart.year,
+                                    dateStart.month,
+                                    dateStart.day,
+                                    _dateEnd.hour,
+                                    _dateEnd.minute,
+                                  );
+                                });
+                              } else if (dateStart.isAfter(_dateEnd)) {
+                                setState(() {
+                                  _dateStart = DateTime(
+                                    _dateEnd.year,
+                                    _dateEnd.month,
+                                    _dateEnd.day,
+                                    _dateStart.hour,
+                                    _dateStart.minute,
+                                  );
+                                });
+                              } else {
+                                setState(() {
+                                  _dateStart = DateTime(
+                                    dateStart.year,
+                                    dateStart.month,
+                                    dateStart.day,
+                                    _dateStart.hour,
+                                    _dateStart.minute,
+                                  );
+                                });
+                              }
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade600),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              _dateStart.dayMonthYear(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              _typeEvent != TypeEventDaily.notRepeat ? 10 : 0,
+                        ),
+                        Visibility(
+                          visible: _typeEvent != TypeEventDaily.notRepeat,
+                          child: Text(
+                            'Até',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              _typeEvent != TypeEventDaily.notRepeat ? 10 : 0,
+                        ),
+                        Visibility(
+                          visible: _typeEvent != TypeEventDaily.notRepeat,
+                          child: InkWell(
+                            onTap: () async {
+                              DateTime? dateEnd = await showDatePicker(
+                                context: context,
+                                initialDate: _dateEnd,
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime(2030),
+                              );
+
+                              if (dateEnd != null) {
+                                if (dateEnd.isBefore(_dateStart)) {
+                                  setState(() {
+                                    _dateEnd = DateTime(
+                                      _dateStart.year,
+                                      _dateStart.month,
+                                      _dateStart.day,
+                                      _dateEnd.hour,
+                                      _dateEnd.minute,
+                                    );
+                                  });
+                                } else {
+                                  setState(() {
+                                    _dateEnd = DateTime(
+                                      dateEnd.year,
+                                      dateEnd.month,
+                                      dateEnd.day,
+                                      _dateEnd.hour,
+                                      _dateEnd.minute,
+                                    );
+                                  });
+                                }
+                              }
+                            },
+                            child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey.shade600),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '2023/05/02',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                  Text(
-                                    '15:00',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                ],
+                              child: Text(
+                                _dateEnd.dayMonthYear(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey.shade700,
+                                ),
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
@@ -154,7 +362,11 @@ class CreateEventDialog extends StatelessWidget {
                             Radio<TypeEventDaily>(
                               value: TypeEventDaily.notRepeat,
                               groupValue: _typeEvent,
-                              onChanged: (value) => _typeEvent = value!,
+                              onChanged: (value) {
+                                setState(() {
+                                  _typeEvent = value!;
+                                });
+                              },
                             ),
                             Text(
                               'Não repetir',
@@ -171,7 +383,18 @@ class CreateEventDialog extends StatelessWidget {
                             Radio<TypeEventDaily>(
                               value: TypeEventDaily.daily,
                               groupValue: _typeEvent,
-                              onChanged: (value) => _typeEvent = value!,
+                              onChanged: (value) {
+                                setState(() {
+                                  _typeEvent = value!;
+                                  _dateEnd = DateTime(
+                                    _dateStart.year,
+                                    _dateStart.month,
+                                    _dateStart.day,
+                                    _dateEnd.hour,
+                                    _dateEnd.minute,
+                                  );
+                                });
+                              },
                             ),
                             Text(
                               'Diaria',
@@ -188,7 +411,11 @@ class CreateEventDialog extends StatelessWidget {
                             Radio<TypeEventDaily>(
                               value: TypeEventDaily.weekly,
                               groupValue: _typeEvent,
-                              onChanged: (value) => _typeEvent = value!,
+                              onChanged: (value) {
+                                setState(() {
+                                  _typeEvent = value!;
+                                });
+                              },
                             ),
                             Text(
                               'Semanal',

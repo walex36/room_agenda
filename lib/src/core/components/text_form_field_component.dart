@@ -23,7 +23,7 @@ class TextFormFieldComponent extends StatelessWidget {
       validator: validator,
       decoration: InputDecoration(
         labelText: labelInput,
-        counter: Container(),
+        counterText: '',
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
