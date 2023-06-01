@@ -617,6 +617,9 @@ class CalendarState extends State<Calendar> {
                         if (widget.onEventSelected != null) {
                           widget.onEventSelected!(event);
                         }
+                        if (event.onTap != null) {
+                          event.onTap!();
+                        }
                       },
                       onLongPress: () {
                         if (widget.onEventLongPressed != null) {

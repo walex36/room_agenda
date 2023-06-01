@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:room_agenda/src/core/extension/date_time_extension.dart';
 import 'package:room_agenda/src/core/extension/time_of_day_extension.dart';
-import 'package:room_agenda/src/features/rooms/enums/type_event_daily_enum.dart';
-import 'package:room_agenda/src/features/rooms/models/eventDaily.dart';
+import '../../enums/type_event_daily_enum.dart';
+import '../../models/eventDaily.dart';
 import '../../../../core/components/text_form_field_component.dart';
 import '../../../../core/components/dialog_component.dart';
 import '../../controller/room_info_provider.dart';
 
 class CreateEventDialog extends StatefulWidget {
   final RoomInfoProvider roomInfoProvider;
+  final EventDaily? eventEdit;
 
   const CreateEventDialog({
     super.key,
     required this.roomInfoProvider,
+    required this.eventEdit,
   });
 
   @override
@@ -22,13 +24,30 @@ class CreateEventDialog extends StatefulWidget {
 
 class _CreateEventDialogState extends State<CreateEventDialog> {
   final _keyForm = GlobalKey<FormState>();
-  final _nameTextController = TextEditingController();
-  final _descriptionTextController = TextEditingController();
+  late TextEditingController _nameTextController;
+  late TextEditingController _descriptionTextController;
 
-  DateTime _dateStart = DateTime.now();
-  DateTime _dateEnd = DateTime.now();
+  late DateTime _dateStart;
+  late DateTime _dateEnd;
 
-  TypeEventDaily _typeEvent = TypeEventDaily.notRepeat;
+  late TypeEventDaily _typeEvent;
+
+  late bool editEvent;
+
+  @override
+  void initState() {
+    editEvent = widget.eventEdit != null;
+    _nameTextController =
+        TextEditingController(text: editEvent ? widget.eventEdit!.title : '');
+    _descriptionTextController = TextEditingController(
+        text: editEvent ? widget.eventEdit!.description : '');
+
+    _dateStart = editEvent ? widget.eventEdit!.dateStart : DateTime.now();
+    _dateEnd = editEvent ? widget.eventEdit!.dateEnd : DateTime.now();
+
+    _typeEvent = editEvent ? widget.eventEdit!.type : TypeEventDaily.notRepeat;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -438,7 +457,9 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
                 child: Column(
                   children: [
                     Text(
-                      'Erro ao criar sala',
+                      editEvent
+                          ? 'Erro ao atualizar evento'
+                          : 'Erro ao criar evento',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.red.shade400,
@@ -469,15 +490,29 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
                         TextButton(
                             onPressed: () {
                               if (_keyForm.currentState!.validate()) {
-                                provider.createEvent(
-                                    eventDaily: EventDaily(
-                                  hash: '',
-                                  title: _nameTextController.text,
-                                  description: _descriptionTextController.text,
-                                  dateStart: _dateStart,
-                                  dateEnd: _dateEnd,
-                                  type: _typeEvent,
-                                ));
+                                if (editEvent) {
+                                  provider.updateEvent(
+                                      eventDaily: EventDaily(
+                                    hash: widget.eventEdit!.hash,
+                                    title: _nameTextController.text,
+                                    description:
+                                        _descriptionTextController.text,
+                                    dateStart: _dateStart,
+                                    dateEnd: _dateEnd,
+                                    type: _typeEvent,
+                                  ));
+                                } else {
+                                  provider.createEvent(
+                                      eventDaily: EventDaily(
+                                    hash: '',
+                                    title: _nameTextController.text,
+                                    description:
+                                        _descriptionTextController.text,
+                                    dateStart: _dateStart,
+                                    dateEnd: _dateEnd,
+                                    type: _typeEvent,
+                                  ));
+                                }
                               }
                             },
                             child: Text(

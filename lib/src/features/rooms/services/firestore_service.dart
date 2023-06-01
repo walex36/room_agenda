@@ -61,6 +61,27 @@ class FirestoreService {
     }
   }
 
+  Future<bool> updateEvent({
+    required String hashCompany,
+    required String hashRoom,
+    required EventDaily eventDaily,
+  }) async {
+    try {
+      await _db
+          .collection('company')
+          .doc(hashCompany)
+          .collection('rooms')
+          .doc(hashRoom)
+          .collection('events')
+          .doc(eventDaily.hash)
+          .update(eventDaily.toMap());
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<List<EventDaily>> getListEvent({
     required String hashCompany,
     required String hashRoom,
