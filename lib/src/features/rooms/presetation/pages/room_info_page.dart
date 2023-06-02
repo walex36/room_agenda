@@ -45,6 +45,8 @@ class _RoomInfoPageState extends State<RoomInfoPage> {
             label: const Text('Criar evento'),
           ),
           body: Calendar(
+            isExpanded: true,
+            datePickerType: DatePickerType.date,
             eventsList: provider.listEvents
                 .map((event) => NeatCleanCalendarEvent(
                       event.title,

@@ -58,7 +58,7 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
           title: Text(
             editEvent ? "Editar evento" : "Criar evento",
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 20,

@@ -100,9 +100,6 @@ class Calendar extends StatefulWidget {
   final DatePickerType? datePickerType;
   final bool hideArrows;
   final bool hideTodayIcon;
-  @Deprecated(
-      'Use `eventsList` instead. Will be removed in NeatAndCleanCalendar 0.4.0')
-  final Map<DateTime, List<NeatCleanCalendarEvent>>? events;
   final List<NeatCleanCalendarEvent>? eventsList;
   final Color? defaultDayColor;
   final Color? defaultOutOfMonthDayColor;
@@ -110,8 +107,6 @@ class Calendar extends StatefulWidget {
   final Color? selectedTodayColor;
   final Color? todayColor;
   final String todayButtonText;
-  final String allDayEventText;
-  final String multiDayEndText;
   final Color? eventColor;
   final Color? eventDoneColor;
   final DateTime? initialDate;
@@ -141,7 +136,6 @@ class Calendar extends StatefulWidget {
     this.onEventLongPressed,
     this.hideBottomBar = false,
     this.isExpandable = false,
-    this.events,
     this.eventsList,
     this.dayBuilder,
     this.eventListBuilder,
@@ -153,15 +147,13 @@ class Calendar extends StatefulWidget {
     this.selectedColor,
     this.selectedTodayColor,
     this.todayColor,
-    this.todayButtonText = 'Today',
-    this.allDayEventText = 'All Day',
-    this.multiDayEndText = 'End',
+    this.todayButtonText = 'Hoje',
     this.eventColor,
     this.eventDoneColor,
     this.initialDate,
     this.isExpanded = false,
-    this.weekDays = const ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    this.locale = 'en_US',
+    this.weekDays = const ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+    this.locale = 'pt_BR',
     this.startOnMonday = false,
     this.dayOfWeekStyle,
     this.bottomBarTextStyle,
@@ -207,7 +199,7 @@ class CalendarState extends State<Calendar> {
   /// renders its view. When this method executes, it fills the eventsMap with the contents of the
   /// given eventsList. This can be used to update the events shown by the calendar.
   void _updateEventsMap() {
-    eventsMap = widget.events ?? {};
+    eventsMap = {};
     // If the user provided a list of events, then convert it to a map, but only if there
     // was no map of events provided. To provide the events in form of a map is the way,
     // the library worked before the v0.3.x release. In v0.3.x the possibility to provide
@@ -219,67 +211,14 @@ class CalendarState extends State<Calendar> {
         widget.eventsList!.isNotEmpty &&
         eventsMap!.isEmpty) {
       for (var event in widget.eventsList!) {
-        final int range = event.endTime.difference(event.startTime).inDays;
-        // Event starts and ends on the same day.
-        if (range == 0) {
-          List<NeatCleanCalendarEvent> dateList = eventsMap![DateTime(
-                  event.startTime.year,
-                  event.startTime.month,
-                  event.startTime.day)] ??
-              [];
-          // Just add the event to the list.
-          eventsMap![DateTime(event.startTime.year, event.startTime.month,
-              event.startTime.day)] = dateList..add(event);
-        } else {
-          for (var i = 0; i <= range; i++) {
-            List<NeatCleanCalendarEvent> dateList = eventsMap![DateTime(
-                    event.startTime.year,
-                    event.startTime.month,
-                    event.startTime.day + i)] ??
-                [];
-            // Iteration over the range (diferrence between start and end time in days).
-            NeatCleanCalendarEvent newEvent = NeatCleanCalendarEvent(
-                event.summary,
-                description: event.description,
-                location: event.location,
-                color: event.color,
-                isAllDay: event.isAllDay,
-                isDone: event.isDone,
-                // Multi-day events span over several days. They have a start time on the first day
-                // and an end time on the last day.  All-day events don't have a start time and end time
-                // So if an event ist an all-day event, the multi-day property gets set to false.
-                // If the event is not an all-day event, the multi-day property gets set to true, because
-                // the difference between
-                isMultiDay: event.isAllDay ? false : true,
-                // Event spans over several days, but entreis in the list can only cover one
-                // day, so the end date of one entry must be on the same day as the start.
-                multiDaySegement: MultiDaySegement.first,
-                startTime: DateTime(
-                    event.startTime.year,
-                    event.startTime.month,
-                    event.startTime.day + i,
-                    event.startTime.hour,
-                    event.startTime.minute),
-                endTime: DateTime(
-                    event.startTime.year,
-                    event.startTime.month,
-                    event.startTime.day + i,
-                    event.endTime.hour,
-                    event.endTime.minute));
-            if (i == 0) {
-              // First day of the event.
-              newEvent.multiDaySegement = MultiDaySegement.first;
-            } else if (i == range) {
-              // Last day of the event.
-              newEvent.multiDaySegement = MultiDaySegement.last;
-            } else {
-              // Middle day of the event.
-              newEvent.multiDaySegement = MultiDaySegement.middle;
-            }
-            eventsMap![DateTime(event.startTime.year, event.startTime.month,
-                event.startTime.day + i)] = dateList..add(newEvent);
-          }
-        }
+        List<NeatCleanCalendarEvent> dateList = eventsMap![DateTime(
+                event.startTime.year,
+                event.startTime.month,
+                event.startTime.day)] ??
+            [];
+        // Just add the event to the list.
+        eventsMap![DateTime(event.startTime.year, event.startTime.month,
+            event.startTime.day)] = dateList..add(event);
       }
     }
     selectedMonthsDays = _daysInMonth(_selectedDate);
@@ -671,9 +610,7 @@ class CalendarState extends State<Calendar> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               // If the event is all day, then display the word "All day" with no time.
-                              child: event.isAllDay || event.isMultiDay
-                                  ? allOrMultiDayDayTimeWidget(event)
-                                  : singleDayTimeWidget(start, end),
+                              child: singleDayTimeWidget(start, end),
                             ),
                           )
                         ],
@@ -702,42 +639,6 @@ class CalendarState extends State<Calendar> {
     );
   }
 
-  Column allOrMultiDayDayTimeWidget(NeatCleanCalendarEvent event) {
-    String start = DateFormat('HH:mm').format(event.startTime).toString();
-    String end = DateFormat('HH:mm').format(event.endTime).toString();
-    if (event.isAllDay) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(widget.allDayEventText,
-              style: Theme.of(context).textTheme.bodyLarge),
-        ],
-      );
-    }
-    if (event.multiDaySegement == MultiDaySegement.first) {
-      // The event begins on the selcted day.
-      // Just show the start time, no end time.
-      end = '';
-    } else if (event.multiDaySegement == MultiDaySegement.last) {
-      // The event ends on the selcted day.
-      // Just show the end time, no start time.
-      start = widget.multiDayEndText;
-    } else {
-      // The event spans multiple days.
-      start = widget.allDayEventText;
-      end = '';
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(start, style: Theme.of(context).textTheme.bodyLarge),
-        Text(end, style: Theme.of(context).textTheme.bodyLarge),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     _updateEventsMap();
@@ -747,12 +648,6 @@ class CalendarState extends State<Calendar> {
     // Slightly inexxficient, to do this sort each time, the widget builds.
     if (_selectedEvents?.isNotEmpty == true) {
       _selectedEvents!.sort((a, b) {
-        if (a.isAllDay == b.isAllDay) {
-          return 0;
-        }
-        if (a.isAllDay) {
-          return -1;
-        }
         return 1;
       });
     }

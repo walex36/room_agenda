@@ -1,4 +1,5 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:room_agenda/src/features/rooms/enums/type_event_daily_enum.dart';
 
 import '../models/eventDaily.dart';
 import '../models/room.dart';
@@ -9,6 +10,7 @@ class RoomInfoProvider extends ChangeNotifier {
   final _fs = FirestoreService();
 
   late Room room;
+  late final List<EventDaily> listEventsFs;
   List<EventDaily> listEvents = [];
 
   bool showErrorCreateEvent = false;
@@ -20,9 +22,44 @@ class RoomInfoProvider extends ChangeNotifier {
       hashCompany: room.hashCompany,
       hashRoom: room.hash,
     );
-    listEvents = events;
+    listEventsFs = events;
 
+    generateListEvents();
     notifyListeners();
+  }
+
+  Future<void> generateListEvents() async {
+    final List<EventDaily> listReturn = [];
+    for (var h = 0; h < listEventsFs.length; h++) {
+      final event = listEventsFs[h];
+
+      if (event.type == TypeEventDaily.notRepeat) {
+        listReturn.add(event);
+      }
+      if (event.type == TypeEventDaily.daily) {
+        final int range = event.dateEnd.difference(event.dateStart).inDays;
+        for (var i = 0; i <= range; i++) {
+          listReturn.add(event.copyWith(
+            dateStart: event.dateStart.copyWith(
+              day: event.dateStart.day + i,
+            ),
+          ));
+        }
+      }
+      if (event.type == TypeEventDaily.weekly) {
+        final int weeklyRange =
+            (event.dateEnd.difference(event.dateStart).inDays / 7).truncate();
+
+        for (var i = 0; i <= weeklyRange; i++) {
+          listReturn.add(event.copyWith(
+            dateStart: event.dateStart.copyWith(
+              day: event.dateStart.day + (i * 7),
+            ),
+          ));
+        }
+      }
+    }
+    listEvents = listReturn;
   }
 
   void createEvent({required EventDaily eventDaily}) async {
