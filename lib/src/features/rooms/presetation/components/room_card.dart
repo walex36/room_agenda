@@ -1,6 +1,6 @@
-import '../../../rooms/models/room.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:room_agenda/src/features/rooms/domain/entities/room_entity.dart';
 
 class RoomCard extends StatelessWidget {
   final Room room;

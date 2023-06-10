@@ -1,21 +1,36 @@
-import '../models/room.dart';
-import '../services/firestore_service.dart';
+import 'package:result_dart/result_dart.dart';
+import 'package:room_agenda/src/features/rooms/domain/entities/room_entity.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:room_agenda/src/features/rooms/domain/usecases/get_list_rooms_usecase.dart';
+import 'package:room_agenda/src/features/rooms/domain/usecases/set_room_usecase.dart';
 
 class RoomProvider extends ChangeNotifier {
-  final _fs = FirestoreService();
+  final GetListRoomsUseCase _getListRoomsUseCase;
+  final SetRoomUseCase _setRoomUseCase;
 
   late String hashCompany;
   List<Room> listRooms = [];
   bool showErroCreateRoom = false;
   bool isLoadingCreateRoom = false;
 
+  RoomProvider({
+    required GetListRoomsUseCase getListRoomsUseCase,
+    required SetRoomUseCase setRoomUseCase,
+  })  : _getListRoomsUseCase = getListRoomsUseCase,
+        _setRoomUseCase = setRoomUseCase;
+
   void initRooms(String hashComp) async {
     hashCompany = hashComp;
-    List<Room> rooms = await _fs.getListRooms(hashCompany);
-    rooms.sort((a, b) => a.title.compareTo(b.title));
-    listRooms.addAll(rooms);
+    await _getListRoomsUseCase(ParamsGetListRooms(hashCompany: hashCompany))
+        .fold(
+      (rooms) {
+        rooms.sort((a, b) => a.title.compareTo(b.title));
+        listRooms.addAll(rooms);
+      },
+      (error) => null,
+    );
 
     notifyListeners();
   }
@@ -33,24 +48,24 @@ class RoomProvider extends ChangeNotifier {
       description: description,
     );
 
-    final isSaved = await _fs.createRoom(
-      hashCompany: hashCompany,
-      room: room,
+    await _setRoomUseCase(ParamsSetRoom(room: room)).fold(
+      (hash) {
+        isLoadingCreateRoom = false;
+        listRooms.add(room.copyWith(hash: hash));
+        notifyListeners();
+        Modular.to.pop();
+      },
+      (error) async {
+        isLoadingCreateRoom = false;
+        showErroCreateRoom = true;
+        notifyListeners();
+
+        await Future.delayed(const Duration(seconds: 5));
+
+        showErroCreateRoom = false;
+      },
     );
-    isLoadingCreateRoom = false;
 
-    if (isSaved.$1) {
-      listRooms.add(room.copyWith(hash: isSaved.$2));
-      notifyListeners();
-      Modular.to.pop();
-    } else {
-      showErroCreateRoom = true;
-      notifyListeners();
-
-      await Future.delayed(const Duration(seconds: 5));
-
-      showErroCreateRoom = false;
-      notifyListeners();
-    }
+    notifyListeners();
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:room_agenda/src/features/rooms/enums/type_event_daily_enum.dart';
+import 'package:room_agenda/src/features/rooms/domain/entities/event_daily_entity.dart';
+import 'package:room_agenda/src/features/rooms/domain/entities/room_entity.dart';
+import 'package:room_agenda/src/features/rooms/domain/enums/type_event_daily_enum.dart';
 
-import '../models/eventDaily.dart';
-import '../models/room.dart';
 import '../services/firestore_service.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +24,7 @@ class RoomInfoProvider extends ChangeNotifier {
     );
     listEventsFs = events;
 
-    generateListEvents();
+    await generateListEvents();
     notifyListeners();
   }
 
@@ -74,7 +74,7 @@ class RoomInfoProvider extends ChangeNotifier {
 
     isLoadingCreateEvent = false;
     if (result.$1) {
-      listEvents.add(eventDaily);
+      listEventsFs.add(eventDaily);
       Modular.to.pop();
     } else {
       showErrorCreateEvent = true;
@@ -83,6 +83,7 @@ class RoomInfoProvider extends ChangeNotifier {
       showErrorCreateEvent = false;
     }
 
+    await generateListEvents();
     notifyListeners();
   }
 
@@ -98,7 +99,7 @@ class RoomInfoProvider extends ChangeNotifier {
 
     isLoadingCreateEvent = false;
     if (result) {
-      listEvents[listEvents.indexWhere(
+      listEventsFs[listEventsFs.indexWhere(
           (element) => element.hash == eventDaily.hash)] = eventDaily;
       Modular.to.pop();
     } else {
@@ -108,6 +109,7 @@ class RoomInfoProvider extends ChangeNotifier {
       showErrorCreateEvent = false;
     }
 
+    await generateListEvents();
     notifyListeners();
   }
 }

@@ -81,6 +81,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  equatable:
+    dependency: "direct main"
+    description:
+      name: equatable
+      sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -260,6 +268,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  result_dart:
+    dependency: "direct main"
+    description:
+      name: result_dart
+      sha256: "4950aadc2c582a1d09300f5b9effb6a6d7db8b158b108b7b8ad45da481cf21a5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.6"
   sky_engine:
     dependency: transitive
     description: flutter

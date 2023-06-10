@@ -1,3 +1,5 @@
+import 'package:flutter_modular/flutter_modular.dart';
+
 import '../../presetation/components/create_room_dialog.dart';
 import '../../presetation/components/room_card.dart';
 import '../../controller/room_provider.dart';
@@ -12,7 +14,7 @@ class RoomsPage extends StatefulWidget {
 }
 
 class _RoomsPageState extends State<RoomsPage> {
-  final roomProvider = RoomProvider();
+  final roomProvider = Modular.get<RoomProvider>();
 
   @override
   void initState() {
