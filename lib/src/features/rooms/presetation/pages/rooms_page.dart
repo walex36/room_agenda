@@ -40,9 +40,12 @@ class _RoomsPageState extends State<RoomsPage> {
         child: Consumer<RoomProvider>(builder: (context, provider, child) {
           return ListView(
             children: provider.listRooms
-                .map((room) => RoomCard(
-                      room: room,
-                    ))
+                .map(
+                  (room) => RoomCard(
+                    room: room,
+                    provider: provider,
+                  ),
+                )
                 .toList(),
           );
         }),

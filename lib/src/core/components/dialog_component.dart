@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DialogComponent extends StatelessWidget {
-  final Widget title;
+  final String title;
   final Widget body;
   final Widget footer;
   DialogComponent({
@@ -23,7 +23,15 @@ class DialogComponent extends StatelessWidget {
             child: ListView(
               shrinkWrap: true,
               children: [
-                title,
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
                 const SizedBox(
                   height: 8,
                 ),

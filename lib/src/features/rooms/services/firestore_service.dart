@@ -1,46 +1,8 @@
 import 'package:room_agenda/src/features/rooms/domain/entities/event_daily_entity.dart';
-import 'package:room_agenda/src/features/rooms/domain/entities/room_entity.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-
-  // Future<List<Room>> getListRooms(String hashCompany) async {
-  //   try {
-  //     final roomsMap = await _db
-  //         .collection('company')
-  //         .doc(hashCompany)
-  //         .collection('rooms')
-  //         .get();
-
-  //     List<Room> rooms = roomsMap.docs
-  //         .map(
-  //           (e) => Room.fromMapFirestore(e.data(), e.id),
-  //         )
-  //         .toList();
-
-  //     return rooms;
-  //   } catch (e) {
-  //     return [];
-  //   }
-  // }
-
-  // Future<(bool, String)> createRoom({
-  //   required String hashCompany,
-  //   required Room room,
-  // }) async {
-  //   try {
-  //     final doc = await _db
-  //         .collection('company')
-  //         .doc(hashCompany)
-  //         .collection('rooms')
-  //         .add(room.toMap());
-
-  //     return (true, doc.id);
-  //   } catch (e) {
-  //     return (false, '');
-  //   }
-  // }
 
   Future<(bool, String)> createEvent({
     required String hashCompany,

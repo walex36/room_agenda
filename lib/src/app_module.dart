@@ -1,6 +1,7 @@
 import 'package:room_agenda/src/features/rooms/controller/room_provider.dart';
 import 'package:room_agenda/src/features/rooms/data/datasource/room_firestore_datasource.dart';
 import 'package:room_agenda/src/features/rooms/data/repositories/room_repository.dart';
+import 'package:room_agenda/src/features/rooms/domain/usecases/delete_room_usecase.dart';
 import 'package:room_agenda/src/features/rooms/domain/usecases/get_list_rooms_usecase.dart';
 import 'package:room_agenda/src/features/rooms/domain/usecases/set_room_usecase.dart';
 
@@ -14,9 +15,15 @@ class AppModule extends Module {
   List<Bind<Object>> get binds => [
         /// PROVIDERS
         Bind((i) => RoomProvider(
-              getListRoomsUseCase: GetListRoomsUseCase(repository: i()),
-              setRoomUseCase: SetRoomUseCase(repository: i()),
+              getListRoomsUseCase: i(),
+              setRoomUseCase: i(),
+              deleteRoomUseCase: i(),
             )),
+
+        /// UseCases
+        Bind((i) => GetListRoomsUseCase(repository: i())),
+        Bind((i) => SetRoomUseCase(repository: i())),
+        Bind((i) => DeleteRoomUseCase(repository: i())),
 
         /// Repositories
         Bind((i) => RoomRepository(dataSourceRemote: i())),

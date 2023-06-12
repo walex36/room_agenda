@@ -23,15 +23,7 @@ class CreateRoomDialog extends StatelessWidget {
       value: roomProvider,
       child: Consumer<RoomProvider>(builder: (context, provider, child) {
         return DialogComponent(
-          title: const Text(
-            "Criar sala",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
+          title: "Criar sala",
           body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Form(
@@ -63,7 +55,7 @@ class CreateRoomDialog extends StatelessWidget {
           footer: Column(
             children: [
               Visibility(
-                visible: provider.showErroCreateRoom,
+                visible: provider.showErroRoom,
                 child: Column(
                   children: [
                     Text(
@@ -80,7 +72,7 @@ class CreateRoomDialog extends StatelessWidget {
                   ],
                 ),
               ),
-              provider.isLoadingCreateRoom
+              provider.isLoadingRoom
                   ? const Center(child: CircularProgressIndicator())
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.end,
