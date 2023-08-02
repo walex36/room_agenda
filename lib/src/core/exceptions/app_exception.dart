@@ -9,3 +9,7 @@ class AppException implements Exception {
 class RoomException extends AppException {
   RoomException(super.message, [super.stackTrace]);
 }
+
+class LoginException extends AppException {
+  LoginException(super.message, [super.stackTrace]);
+}

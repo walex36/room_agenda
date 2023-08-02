@@ -3,7 +3,7 @@ import 'package:room_agenda/src/features/rooms/domain/entities/room_entity.dart'
 import '../../controller/room_info_provider.dart';
 import '../../presetation/components/create_event_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart';
+import 'package:flutter_clean_calendar/flutter_neat_and_clean_calendar.dart';
 import 'package:provider/provider.dart';
 
 class RoomInfoPage extends StatefulWidget {

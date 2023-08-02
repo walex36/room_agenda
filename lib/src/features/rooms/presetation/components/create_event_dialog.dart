@@ -366,9 +366,11 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
                       height: 10,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Wrap(
                           crossAxisAlignment: WrapCrossAlignment.center,
+                          direction: Axis.vertical,
                           children: [
                             Radio<TypeEventDaily>(
                               value: TypeEventDaily.notRepeat,
@@ -390,6 +392,7 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
                         ),
                         Wrap(
                           crossAxisAlignment: WrapCrossAlignment.center,
+                          direction: Axis.vertical,
                           children: [
                             Radio<TypeEventDaily>(
                               value: TypeEventDaily.daily,
@@ -418,6 +421,7 @@ class _CreateEventDialogState extends State<CreateEventDialog> {
                         ),
                         Wrap(
                           crossAxisAlignment: WrapCrossAlignment.center,
+                          direction: Axis.vertical,
                           children: [
                             Radio<TypeEventDaily>(
                               value: TypeEventDaily.weekly,
