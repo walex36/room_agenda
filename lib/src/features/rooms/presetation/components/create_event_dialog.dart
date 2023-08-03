@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:room_agenda/src/core/extension/date_time_extension.dart';
-import 'package:room_agenda/src/core/extension/time_of_day_extension.dart';
+import 'package:room_agenda/src/core/core.dart';
 import 'package:room_agenda/src/features/rooms/domain/entities/event_daily_entity.dart';
 import '../../domain/enums/type_event_daily_enum.dart';
-import '../../../../core/components/text_form_field_component.dart';
-import '../../../../core/components/dialog_component.dart';
 import '../../controller/room_info_provider.dart';
 
 class CreateEventDialog extends StatefulWidget {

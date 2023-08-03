@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:result_dart/src/unit.dart';
-import 'package:room_agenda/src/core/const/firestore_const.dart';
-import 'package:room_agenda/src/core/exceptions/app_exception.dart';
-import 'package:room_agenda/src/features/rooms/data/datasource/room_imp_remote_datasource.dart';
+import 'package:result_dart/result_dart.dart';
+import 'package:room_agenda/src/core/core.dart';
+
+import 'package:room_agenda/src/features/rooms/data/datasource/imp_room_remote_datasource.dart';
 import 'package:room_agenda/src/features/rooms/data/models/room_model.dart';
 
-class RoomFirestoreDataSource implements RoomImpRemoteDataSource {
+class RoomFirestoreDataSource implements ImpRoomRemoteDataSource {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   @override

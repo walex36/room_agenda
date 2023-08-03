@@ -1,3 +1,5 @@
+import 'package:room_agenda/src/core/src/const/router_const.dart';
+
 import 'app_module.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -9,7 +11,7 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Modular.setInitialRoute('/');
+    Modular.setInitialRoute(RouterConst.login());
     return ModularApp(
       module: AppModule(),
       child: MaterialApp.router(

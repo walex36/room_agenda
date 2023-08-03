@@ -1,3 +1,5 @@
+import 'package:room_agenda/src/core/src/const/router_const.dart';
+import 'package:room_agenda/src/features/login/login.dart';
 import 'package:room_agenda/src/features/rooms/controller/room_provider.dart';
 import 'package:room_agenda/src/features/rooms/data/datasource/room_firestore_datasource.dart';
 import 'package:room_agenda/src/features/rooms/data/repositories/room_repository.dart';
@@ -7,7 +9,6 @@ import 'package:room_agenda/src/features/rooms/domain/usecases/set_room_usecase.
 
 import 'features/rooms/presetation/pages/room_info_page.dart';
 import 'features/rooms/presetation/pages/rooms_page.dart';
-import 'features/rooms/services/firestore_service.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AppModule extends Module {
@@ -30,12 +31,14 @@ class AppModule extends Module {
 
         /// DataSources
         Bind((i) => RoomFirestoreDataSource()),
-
-        Bind((i) => FirestoreService()),
       ];
 
   @override
   List<ModularRoute> get routes => [
+        ModuleRoute(
+          RouterConst.login(),
+          module: LoginModule(),
+        ),
         ChildRoute(
           '/',
           child: (context, args) => const RoomsPage(),

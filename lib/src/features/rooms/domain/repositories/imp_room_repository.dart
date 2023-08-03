@@ -1,8 +1,8 @@
 import 'package:result_dart/result_dart.dart';
-import 'package:room_agenda/src/core/exceptions/app_exception.dart';
+import 'package:room_agenda/src/core/core.dart';
 import 'package:room_agenda/src/features/rooms/domain/entities/room_entity.dart';
 
-abstract class RoomImpRepository {
+abstract class ImpRoomRepository {
   Future<Result<List<Room>, RoomException>> getListRooms({
     required String hashCompany,
   });

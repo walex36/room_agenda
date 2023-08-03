@@ -1,5 +1,5 @@
-import '../../../../core/components/dialog_component.dart';
-import '../../../../core/components/text_form_field_component.dart';
+import 'package:room_agenda/src/core/core.dart';
+
 import '../../controller/room_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

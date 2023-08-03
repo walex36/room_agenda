@@ -1,7 +1,7 @@
 import 'package:result_dart/result_dart.dart';
 import 'package:room_agenda/src/features/rooms/data/models/room_model.dart';
 
-abstract class RoomImpRemoteDataSource {
+abstract class ImpRoomRemoteDataSource {
   Future<List<RoomModel>> getRooms({
     required String hashCompany,
   });

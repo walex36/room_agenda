@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:provider/provider.dart';
-import 'package:room_agenda/src/core/components/dialog_component.dart';
+import 'package:room_agenda/src/core/core.dart';
 import 'package:room_agenda/src/features/rooms/controller/room_provider.dart';
 import 'package:room_agenda/src/features/rooms/domain/entities/room_entity.dart';
 

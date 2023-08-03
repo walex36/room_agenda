@@ -1,10 +1,9 @@
 import 'package:result_dart/result_dart.dart';
-import 'package:room_agenda/src/core/exceptions/app_exception.dart';
-import 'package:room_agenda/src/core/usecases/usecase.dart';
-import 'package:room_agenda/src/features/rooms/domain/repositories/room_imp_repository.dart';
+import 'package:room_agenda/src/core/core.dart';
+import 'package:room_agenda/src/features/rooms/domain/repositories/imp_room_repository.dart';
 
 class DeleteRoomUseCase implements UseCase<Unit, ParamsDeleteRoom> {
-  final RoomImpRepository repository;
+  final ImpRoomRepository repository;
 
   DeleteRoomUseCase({required this.repository});
 

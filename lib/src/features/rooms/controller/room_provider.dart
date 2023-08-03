@@ -1,6 +1,4 @@
-import 'package:result_dart/result_dart.dart';
 import 'package:room_agenda/src/features/rooms/domain/entities/room_entity.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:room_agenda/src/features/rooms/domain/usecases/delete_room_usecase.dart';
@@ -27,8 +25,10 @@ class RoomProvider extends ChangeNotifier {
 
   void initRooms(String hashComp) async {
     hashCompany = hashComp;
-    await _getListRoomsUseCase(ParamsGetListRooms(hashCompany: hashCompany))
-        .fold(
+    final roomsOrFailure = await _getListRoomsUseCase(
+        ParamsGetListRooms(hashCompany: hashCompany));
+
+    roomsOrFailure.fold(
       (rooms) {
         rooms.sort((a, b) => a.title.compareTo(b.title));
         listRooms.addAll(rooms);
@@ -52,7 +52,9 @@ class RoomProvider extends ChangeNotifier {
       description: description,
     );
 
-    await _setRoomUseCase(ParamsSetRoom(room: room)).fold(
+    final hashOrFailure = await _setRoomUseCase(ParamsSetRoom(room: room));
+
+    hashOrFailure.fold(
       (hash) {
         isLoadingRoom = false;
         listRooms.add(room.copyWith(hash: hash));
@@ -79,10 +81,12 @@ class RoomProvider extends ChangeNotifier {
     isLoadingRoom = true;
     notifyListeners();
 
-    await _deleteRoomUseCase(ParamsDeleteRoom(
+    final deleteOrFailure = await _deleteRoomUseCase(ParamsDeleteRoom(
       hashCompany: hashCompany,
       hashRoom: room.hash,
-    )).fold(
+    ));
+
+    deleteOrFailure.fold(
       (success) {
         isLoadingRoom = false;
         listRooms.remove(room);
