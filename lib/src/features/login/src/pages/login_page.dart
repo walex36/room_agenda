@@ -17,8 +17,8 @@ class LoginPage extends StatelessWidget {
           Center(
             child: ElevatedButton.icon(
               onPressed: () => loginProvider.onSignIn(),
-              icon: Icon(Icons.login),
-              label: Text('Login'),
+              icon: const Icon(Icons.login),
+              label: const Text('Login'),
             ),
           )
         ],

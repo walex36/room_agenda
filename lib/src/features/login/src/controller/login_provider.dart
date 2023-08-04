@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:room_agenda/src/core/src/usecases/usecase.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:room_agenda/src/core/core.dart';
 import 'package:room_agenda/src/features/login/login.dart';
 
 class LoginProvider extends ChangeNotifier {
@@ -14,7 +15,9 @@ class LoginProvider extends ChangeNotifier {
 
     userOrFailure.fold(
       (user) {
-        print(user);
+        Modular.to.pushReplacementNamed(RouterConst.company(), arguments: {
+          'usuario': user,
+        });
       },
       (failure) {
         print(failure);

@@ -26,7 +26,7 @@ class LoginFirebaseDatasource implements ImpLoginRemoteDatasource {
           name: userCredential.user!.displayName!,
           email: userCredential.user!.email!,
           photoUrl: userCredential.user!.photoURL!,
-          cnpj: const [],
+          cnpjs: const [],
         );
 
         await _db

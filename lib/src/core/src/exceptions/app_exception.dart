@@ -13,3 +13,7 @@ class RoomException extends AppException {
 class LoginException extends AppException {
   LoginException(super.message, [super.stackTrace]);
 }
+
+class RemoteException extends AppException {
+  RemoteException(super.message, [super.stackTrace]);
+}

@@ -4,13 +4,13 @@ class Usuario extends Equatable {
   final String name;
   final String email;
   final String photoUrl;
-  final List<String> cnpj;
+  final List<String> cnpjs;
 
   const Usuario({
     required this.name,
     required this.email,
     required this.photoUrl,
-    required this.cnpj,
+    required this.cnpjs,
   });
 
   @override
@@ -18,6 +18,6 @@ class Usuario extends Equatable {
         name,
         email,
         photoUrl,
-        cnpj,
+        cnpjs,
       ];
 }

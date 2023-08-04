@@ -7,25 +7,25 @@ class UsuarioModel extends Usuario {
     required String name,
     required String email,
     required String photoUrl,
-    required List<String> cnpj,
+    required List<String> cnpjs,
   }) : super(
           name: name,
           email: email,
           photoUrl: photoUrl,
-          cnpj: cnpj,
+          cnpjs: cnpjs,
         );
 
   UsuarioModel copyWith({
     String? name,
     String? email,
     String? photoUrl,
-    List<String>? cnpj,
+    List<String>? cnpjs,
   }) {
     return UsuarioModel(
       name: name ?? this.name,
       email: email ?? this.email,
       photoUrl: photoUrl ?? this.photoUrl,
-      cnpj: cnpj ?? this.cnpj,
+      cnpjs: cnpjs ?? this.cnpjs,
     );
   }
 
@@ -34,7 +34,7 @@ class UsuarioModel extends Usuario {
       'name': name,
       'email': email,
       'photoUrl': photoUrl,
-      'cnpj': cnpj,
+      'cnpjs': cnpjs,
     };
   }
 
@@ -43,12 +43,12 @@ class UsuarioModel extends Usuario {
       name: map['name'] ?? '',
       email: map['email'] ?? '',
       photoUrl: map['photoUrl'] ?? '',
-      cnpj: List.from(map['cnpj'] ?? []),
+      cnpjs: List.from(map['cnpjs'] ?? []),
     );
   }
 
   Usuario toEntity() {
-    return Usuario(name: name, email: email, photoUrl: photoUrl, cnpj: cnpj);
+    return Usuario(name: name, email: email, photoUrl: photoUrl, cnpjs: cnpjs);
   }
 
   factory UsuarioModel.fromEntity(Usuario usuario) {
@@ -56,7 +56,7 @@ class UsuarioModel extends Usuario {
       name: usuario.name,
       email: usuario.email,
       photoUrl: usuario.photoUrl,
-      cnpj: usuario.cnpj,
+      cnpjs: usuario.cnpjs,
     );
   }
 
