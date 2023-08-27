@@ -22,6 +22,9 @@ class RoomProvider extends ChangeNotifier {
 
   void initRooms(String hashComp) async {
     hashCompany = hashComp;
+    isLoadingRoom = true;
+    notifyListeners();
+
     final roomsOrFailure = await _getListRoomsUseCase(
         ParamsGetListRooms(hashCompany: hashCompany));
 
@@ -33,6 +36,7 @@ class RoomProvider extends ChangeNotifier {
       (error) => null,
     );
 
+    isLoadingRoom = false;
     notifyListeners();
   }
 

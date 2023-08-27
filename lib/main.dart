@@ -9,10 +9,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   if (FirebaseAuth.instance.currentUser != null) {
-    await FirebaseAuth.instance.currentUser?.delete();
+    await GoogleSignIn().disconnect();
   }
   await FirebaseAuth.instance.signOut();
-  await GoogleSignIn().disconnect();
   FirebaseFirestore.instance.settings =
       const Settings(persistenceEnabled: false);
 

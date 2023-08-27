@@ -1,6 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:room_agenda/src/features/login/login.dart';
-import 'package:room_agenda/src/features/login/src/pages/login_page.dart';
+import 'package:room_agenda/src/features/login/src/presentation/pages/login_page.dart';
 
 class LoginModule extends Module {
   @override

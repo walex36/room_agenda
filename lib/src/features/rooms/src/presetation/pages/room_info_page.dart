@@ -29,38 +29,49 @@ class _RoomInfoPageState extends State<RoomInfoPage> {
     return ChangeNotifierProvider<RoomInfoProvider>(
       create: (context) => roomInfoProvider,
       child: Consumer<RoomInfoProvider>(builder: (context, provider, child) {
+        bool isLoading = provider.isLoading;
+
         return Scaffold(
           appBar: AppBar(
             title: Text(widget.room.title),
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () async => await showDialog(
-              context: context,
-              builder: (context) => CreateEventDialog(
-                roomInfoProvider: provider,
-                eventEdit: null,
+          floatingActionButton: Visibility(
+            visible: !isLoading,
+            child: FloatingActionButton.extended(
+              onPressed: () async => await showDialog(
+                context: context,
+                builder: (context) => CreateEventDialog(
+                  roomInfoProvider: provider,
+                  eventEdit: null,
+                ),
               ),
+              label: const Text('Criar evento'),
             ),
-            label: const Text('Criar evento'),
           ),
-          body: Calendar(
-            isExpanded: true,
-            datePickerType: DatePickerType.date,
-            eventsList: provider.listEvents
-                .map((event) => NeatCleanCalendarEvent(
-                      event.title,
-                      description: event.description,
-                      startTime: event.dateStart,
-                      endTime: event.dateEnd,
-                      onTap: () async => await showDialog(
-                        context: context,
-                        builder: (context) => CreateEventDialog(
-                          roomInfoProvider: provider,
-                          eventEdit: event,
+          body: Visibility(
+            visible: !isLoading,
+            replacement: const Center(
+              child: CircularProgressIndicator(),
+            ),
+            child: Calendar(
+              isExpanded: true,
+              datePickerType: DatePickerType.date,
+              eventsList: provider.listEvents
+                  .map((event) => NeatCleanCalendarEvent(
+                        event.title,
+                        description: event.description,
+                        startTime: event.dateStart,
+                        endTime: event.dateEnd,
+                        onTap: () async => await showDialog(
+                          context: context,
+                          builder: (context) => CreateEventDialog(
+                            roomInfoProvider: provider,
+                            eventEdit: event,
+                          ),
                         ),
-                      ),
-                    ))
-                .toList(),
+                      ))
+                  .toList(),
+            ),
           ),
         );
       }),

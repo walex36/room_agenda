@@ -26,31 +26,40 @@ class _RoomsPageState extends State<RoomsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Listas de salas'),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async => await showDialog(
-          context: context,
-          builder: (context) => CreateRoomDialog(roomProvider: roomProvider),
-        ),
-        label: const Text('Criar Sala'),
-      ),
-      body: ChangeNotifierProvider<RoomProvider>(
-        create: (context) => roomProvider,
-        child: Consumer<RoomProvider>(builder: (context, provider, child) {
-          return ListView(
-            children: provider.listRooms
-                .map(
-                  (room) => RoomCard(
-                    room: room,
-                    provider: provider,
+    return ChangeNotifierProvider<RoomProvider>(
+      create: (context) => roomProvider,
+      child: Consumer<RoomProvider>(
+        builder: (context, provider, child) {
+          bool isLoadingRoom = provider.isLoadingRoom;
+
+          return Scaffold(
+              appBar: AppBar(
+                title: const Text('Listas de salas'),
+              ),
+              floatingActionButton: Visibility(
+                visible: !isLoadingRoom,
+                child: FloatingActionButton.extended(
+                  onPressed: () async => await showDialog(
+                    context: context,
+                    builder: (context) =>
+                        CreateRoomDialog(roomProvider: roomProvider),
                   ),
-                )
-                .toList(),
-          );
-        }),
+                  label: const Text('Criar Sala'),
+                ),
+              ),
+              body: isLoadingRoom
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView(
+                      children: provider.listRooms
+                          .map(
+                            (room) => RoomCard(
+                              room: room,
+                              provider: provider,
+                            ),
+                          )
+                          .toList(),
+                    ));
+        },
       ),
     );
   }

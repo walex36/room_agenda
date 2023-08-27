@@ -11,11 +11,18 @@ class RoomInfoProvider extends ChangeNotifier {
   late final List<EventDaily> listEventsFs;
   List<EventDaily> listEvents = [];
 
+  bool isLoading = false;
+
   bool showErrorCreateEvent = false;
   bool isLoadingCreateEvent = false;
 
   Future<void> initRoomInfo({required Room roomInit}) async {
     room = roomInit;
+    isLoading = true;
+    notifyListeners();
+    await Future.delayed(
+      const Duration(seconds: 5),
+    );
     List<EventDaily> events = await _fs.getListEvent(
       hashCompany: room.hashCompany,
       hashRoom: room.hash,
@@ -23,6 +30,8 @@ class RoomInfoProvider extends ChangeNotifier {
     listEventsFs = events;
 
     await generateListEvents();
+
+    isLoading = false;
     notifyListeners();
   }
 
